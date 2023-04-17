@@ -1,11 +1,6 @@
 const std = @import("std");
 
-pub fn sieve_of_eratosthenes(n: usize) !usize {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-
-    const allocator = arena.allocator();
-
+pub fn sieve_of_eratosthenes(n: usize, allocator: std.mem.Allocator) !usize {
     var arr = try allocator.alloc(bool, n + 1);
 
     arr[0] = false;
@@ -36,12 +31,18 @@ pub fn sieve_of_eratosthenes(n: usize) !usize {
 
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
-    const args = try std.process.argsAlloc(std.heap.page_allocator);
+
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+
+    const allocator = arena.allocator();
+    const args = try std.process.argsAlloc(allocator);
+
     const first_arg = args[1];
 
     const n = try std.fmt.parseInt(usize, first_arg, 10);
 
-    var primes = try sieve_of_eratosthenes(n);
+    var primes = try sieve_of_eratosthenes(n, allocator);
 
     try stdout.print("Primes up to {d} are: {d}\n", .{ n, primes });
 }
