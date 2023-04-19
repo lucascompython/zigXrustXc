@@ -32,7 +32,7 @@ zig build -Drelease-fast
 Result
 
 ```bash
-time ./zig-cache/bin/zig 100000000
+time ./zig-out/bin/zig 100000000
 # 0.44s, 143MB MAX RAM, 25k binary size
 ```
 
