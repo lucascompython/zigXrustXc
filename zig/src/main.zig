@@ -9,12 +9,12 @@ pub fn sieve_of_eratosthenes(n: usize, allocator: std.mem.Allocator) !usize {
     for (arr) |*e| e.* = true;
 
     var i: f64 = 2;
-    var n_float = @intToFloat(f64, n);
+    const n_float: f64 = @floatFromInt(n);
     while (i < @sqrt(n_float)) : (i += 1) {
-        if (arr[@floatToInt(usize, i)]) {
+        if (arr[@intFromFloat(i)]) {
             var j: f64 = i * i;
             while (j <= n_float) : (j += i) {
-                arr[@floatToInt(usize, j)] = false;
+                arr[@intFromFloat(j)] = false;
             }
         }
     }
@@ -42,7 +42,7 @@ pub fn main() !void {
 
     const n = try std.fmt.parseInt(usize, first_arg, 10);
 
-    var primes = try sieve_of_eratosthenes(n, allocator);
+    const primes = try sieve_of_eratosthenes(n, allocator);
 
     try stdout.print("Primes up to {d} are: {d}\n", .{ n, primes });
 }

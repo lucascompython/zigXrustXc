@@ -26,7 +26,7 @@ time ./sieve 100000000
 Build
 
 ```bash
-zig build -Drelease-fast
+zig build -Doptimize=ReleaseFast
 ```
 
 Result
