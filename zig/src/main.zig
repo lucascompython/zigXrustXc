@@ -1,32 +1,38 @@
 const std = @import("std");
 
 pub fn sieve_of_eratosthenes(n: usize, allocator: std.mem.Allocator) !usize {
-    var arr = try allocator.alloc(bool, n + 1);
+    if (n < 2) return 0;
+    if (n == 2) return 1;
 
-    arr[0] = false;
-    arr[1] = false;
+    const odd_count = (n - 1) >> 1;
+    const bytes = (odd_count + 7) >> 3;
 
-    for (arr) |*e| e.* = true;
+    var bitmap = try allocator.alignedAlloc(u8, 64, bytes);
+    defer allocator.free(bitmap);
+    @memset(bitmap, 0xFF);
 
-    var i: f64 = 2;
-    const n_float: f64 = @floatFromInt(n);
-    while (i < @sqrt(n_float)) : (i += 1) {
-        if (arr[@intFromFloat(i)]) {
-            var j: f64 = i * i;
-            while (j <= n_float) : (j += i) {
-                arr[@intFromFloat(j)] = false;
+    var i: usize = 0;
+    while (2 * i + 3 <= n) : (i += 1) {
+        if (bitmap[i >> 3] & (@as(u8, 1) << @intCast(i & 7)) != 0) {
+            const prime = 2 * i + 3;
+            if (prime * prime <= n) {
+                var j = (prime * prime - 3) >> 1;
+                while (j < odd_count) : (j += prime) {
+                    bitmap[j >> 3] &= ~(@as(u8, 1) << @intCast(j & 7));
+                }
             }
         }
     }
 
-    var count: usize = 0;
-    for (arr) |e| {
-        if (e) {
+    var count: usize = 1;
+    var pos: usize = 0;
+    while (pos < odd_count) : (pos += 1) {
+        if (bitmap[pos >> 3] & (@as(u8, 1) << @intCast(pos & 7)) != 0) {
             count += 1;
         }
     }
 
-    return count - 2;
+    return count;
 }
 
 pub fn main() !void {
@@ -44,5 +50,5 @@ pub fn main() !void {
 
     const primes = try sieve_of_eratosthenes(n, allocator);
 
-    try stdout.print("Primes up to {d} are: {d}\n", .{ n, primes });
+    try stdout.print("There are {d} primes between 2 and {d}\n", .{ primes, n });
 }

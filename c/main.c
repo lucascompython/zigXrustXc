@@ -1,38 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <stdbool.h>
+#include <string.h>
+#include <stdint.h>
 
-int sieve_of_eratosthenes(int n)
-{
-    bool *is_prime = (bool *)malloc((n + 1) * sizeof(bool));
+int sieve_of_eratosthenes(int n) {
+    if (n < 2) return 0;
+    if (n == 2) return 1;
 
-    for (int i = 2; i <= n; i++)
-    {
-        is_prime[i] = true;
-    }
+    size_t odd_count = (n - 1) / 2;
+    size_t byte_size = (odd_count + 7) / 8;
+    uint8_t *bits = malloc(byte_size);
+    
+    memset(bits, 0xFF, byte_size);
 
-    for (int i = 2; i <= sqrt(n); i++)
-    {
-        if (is_prime[i])
-        {
-            for (int j = i * i; j <= n; j += i)
-            {
-                is_prime[j] = false;
+    for (size_t i = 0; 2 * i + 3 <= n; i++) {
+        if (bits[i/8] & (1 << (i%8))) {
+            size_t prime = 2 * i + 3;
+            if (prime * prime <= n) {
+                for (size_t j = (prime * prime - 3) / 2; j < odd_count; j += prime) {
+                    bits[j/8] &= ~(1 << (j%8));
+                }
             }
         }
     }
 
-    int total = 0;
-    for (int i = 2; i <= n; i++)
-    {
-        if (is_prime[i])
-        {
-            total++;
-        }
+    int total = 1;
+    for (size_t i = 0; i < odd_count; i++) {
+        if (bits[i/8] & (1 << (i%8))) total++;
     }
 
-    free(is_prime);
+    free(bits);
     return total;
 }
 
