@@ -2,51 +2,8 @@
 
 ## Things to know
 
-My CPU is a Amd Ryzen 9 7950x, so results may vary *a lot* on other CPUs.  
 My Rust binary is still pretty small compared to normal Rust binaries, check the [Cargo.toml](./rust/Cargo.toml#L11) file for more info.  
-The C and Rust binaries are dynamically linked, and the Zig binary is statically linked.
 
-## C (clang v15.0.7)
+Results on AMD 9950X:
 
-Build
-
-```bash
-clang -Ofast -lm main.c -o sieve
-```
-
-Result
-
-```bash
-time ./sieve 100000000
-# 0.33s, 96MB MAX RAM, 16k binary size
-```
-
-## Zig (v0.10.1)
-
-Build
-
-```bash
-zig build -Doptimize=ReleaseFast
-```
-
-Result
-
-```bash
-time ./zig-out/bin/zig 100000000
-# 0.44s, 143MB MAX RAM, 25k binary size
-```
-
-## Rust (v1.68.2)
-
-Build
-
-```bash
-cargo build --release
-```
-
-Result
-
-```bash
-time ./target/release/rust 100000000
-# 0.47s, 96MB MAX RAM, 293k binary size
-```
+![results](https://private-user-images.githubusercontent.com/482133/397763406-907f5070-93d5-47da-b620-e7b24ff05c75.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzYxODQ2MjEsIm5iZiI6MTczNjE4NDMyMSwicGF0aCI6Ii80ODIxMzMvMzk3NzYzNDA2LTkwN2Y1MDcwLTkzZDUtNDdkYS1iNjIwLWU3YjI0ZmYwNWM3NS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMTA2JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDEwNlQxNzI1MjFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kNmJhYTBhZTNiNjJkZDJkN2VlNGU0MjU1NjJkOWZhOGNkNzhhNjBlNzc1MTU2MGY3YTVmN2YwYjYxOTkyZTYzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.owv2RjJ_e61Z4kHmm1Nlf-xIfOCoway4f4ATJrqqddI)
