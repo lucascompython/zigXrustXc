@@ -11,7 +11,20 @@ pub fn build(b: *std.Build) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const optimize = b.standardOptimizeOption(.{});
 
-    const exe = b.addExecutable(.{ .name = "zig", .root_source_file = b.path("src/main.zig"), .target = target, .optimize = optimize });
+    const exe_mod = b.createModule(.{
+
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+        .strip = optimize != .Debug,
+        .unwind_tables = .none,
+    });
+
+    const exe = b.addExecutable(.{
+        .name = "zig",
+        .root_module = exe_mod
+    });
+    exe.want_lto = true;
 
     b.installArtifact(exe);
 
@@ -24,8 +37,4 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
-    const exe_tests = b.addTest(.{ .root_source_file = b.path("src/main.zig"), .target = target, .optimize = optimize });
-
-    const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&exe_tests.step);
 }

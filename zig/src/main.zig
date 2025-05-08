@@ -7,7 +7,7 @@ pub fn sieve_of_eratosthenes(n: usize, allocator: std.mem.Allocator) !usize {
     const odd_count = (n - 1) >> 1;
     const bytes = (odd_count + 7) >> 3;
 
-    var bitmap = try allocator.alignedAlloc(u8, 64, bytes);
+    var bitmap = try allocator.alignedAlloc(u8, std.mem.Alignment.@"64", bytes);
     defer allocator.free(bitmap);
     @memset(bitmap, 0xFF);
 
